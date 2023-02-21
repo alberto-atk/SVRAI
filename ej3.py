@@ -1,24 +1,21 @@
-from random import choices
+import random
 
-class Estado:
-    def __init__(self,x,y,es_reward):
-        self.x = x   
-        self.y = y
-        self.es_reward = es_reward
-    def __str__(self) -> str:
-        return "Estado: " + str(self.x) + " " + str(self.y) + " rw: " + str(self.es_reward)
-
+FILAS = 9
+COLUMNAS = 9
 class Entorno:
-    estado_actual = Estado(-1,-1,False)
+    estado_actual = [-1,-1]
     recompensa = 0
 
     def __init__(self,id,estados:dict, acciones:dict):
         self.id = id
         self.estados = estados
         self.acciones = acciones
-        self.estado_actual =  choices(population=list(estados),k=1)[0]
+        #self.estado_actual[0] = random.randint(0, FILAS)
+        #self.estado_actual[1] = random.randint(0, COLUMNAS)
 
-        
+        self.estado_actual[0] = 7
+        self.estado_actual[1] = 7
+
     def realizar_accion(self,accion):
         pesos = []
         if accion in acciones:
@@ -31,36 +28,46 @@ class Entorno:
 
             #Obtencion de la accion
             print(self.estado_actual)
-            accionFinal = choices(population=list(acciones),k=1,weights=pesos)[0]
+            auxEstado = self.estado_actual.copy()
+            accionFinal = random.choices(population=list(acciones),k=1,weights=pesos)[0]
             print(accionFinal)
-            if accionFinal == "up":
-                self.estado_actual = Estado(self.estado_actual.x-1,self.estado_actual.y,self.estado_actual.es_reward)
-            elif accionFinal == "right":
-                self.estado_actual = Estado(self.estado_actual.x,self.estado_actual.y+1,self.estado_actual.es_reward)
-            elif accionFinal == "left":
-                self.estado_actual = Estado(self.estado_actual.x,self.estado_actual.y-1,self.estado_actual.es_reward)
-            elif accionFinal == "down":
-                self.estado_actual = Estado(self.estado_actual.x+1,self.estado_actual.y,self.estado_actual.es_reward)
+            if accionFinal == "up" and self.estado_actual[0] > 0:
+                self.estado_actual[0] -= 1
+            elif accionFinal == "right" and self.estado_actual[1] < COLUMNAS:
+                self.estado_actual[1] += 1
+            elif accionFinal == "left" and self.estado_actual[1] > 0:
+                self.estado_actual[1] -= 1
+            elif accionFinal == "down" and self.estado_actual[0] < FILAS:
+                self.estado_actual[1] += 1
             
-            if self.estado_actual.x < 0:
-                self.estado_actual.x = 0
-            if self.estado_actual.y < 0:
-                self.estado_actual.y = 0
-            if self.estado_actual.x > 9:
-                self.estado_actual.x = 9
-            if self.estado_actual.y > 9:
-                self.estado_actual.y = 9
-
+            if auxEstado == self.estado_actual:
+                self.recompensa -= 1
+            else:
+                self.recompensa += self.estados[self.estado_actual[0]][self.estado_actual[1]]
+            print(self.recompensa)
             print(self.estado_actual)
-
 
 
 acciones = {"left":0,"right":1,"up":2,"down":3}
 
 estados = []
 for i in range(10):
+    estados.append([])
     for j in range(10):
-        estados.append(Estado(i,j,False))
+        estados[i].append(0)
 
+estados[7][8] = 10
+estados[2][7] = 3
+estados[4][3] = -5
+estados[7][3] = -10
+
+
+"""
+Para mostrar la matriz:
+    for fila in estados:
+        for valor in fila:
+            print("\t", valor, end=" ")
+        print()
+"""
 entorno = Entorno("ejercicio3",estados, acciones)
-entorno.realizar_accion("up")
+entorno.realizar_accion("right")
