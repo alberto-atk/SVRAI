@@ -27,10 +27,10 @@ class Entorno:
                     pesos.append(0.1)
 
             #Obtencion de la accion
-            print(self.estado_actual)
+            #print(self.estado_actual)
             auxEstado = self.estado_actual.copy()
             accionFinal = random.choices(population=list(acciones),k=1,weights=pesos)[0]
-            print(accionFinal)
+            #print(accionFinal)
             if accionFinal == "up" and self.estado_actual[0] > 0:
                 self.estado_actual[0] -= 1
             elif accionFinal == "right" and self.estado_actual[1] < COLUMNAS:
@@ -44,8 +44,17 @@ class Entorno:
                 self.recompensa -= 1
             else:
                 self.recompensa += self.estados[self.estado_actual[0]][self.estado_actual[1]]
-            print(self.recompensa)
-            print(self.estado_actual)
+            #print(self.recompensa)
+            #print(self.estado_actual)
+    
+    def renderizar(self):
+        for i in self.estados:
+            for j in i:
+                if i == self.estado_actual[0] and j == self.estado_actual[j]:
+                    print("\t", "*", end=" ")
+                else:
+                    print("\t", j, end=" ")
+            print()
 
 
 acciones = {"left":0,"right":1,"up":2,"down":3}
@@ -70,4 +79,5 @@ Para mostrar la matriz:
         print()
 """
 entorno = Entorno("ejercicio3",estados, acciones)
-entorno.realizar_accion("right")
+entorno.renderizar()
+#entorno.realizar_accion("right")

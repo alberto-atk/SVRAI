@@ -11,12 +11,11 @@ class Entorno:
     estado_actual = 0
     recompensa = 0
 
-    def __init__(self,id,estados:dict, acciones:dict):
+    def __init__(self,id,estados:list, acciones:dict):
         self.id = id
         self.estados = estados
         self.acciones = acciones
         self.estado_actual = 0
-        print(type(self.estado_actual))
 
 
 
@@ -35,6 +34,22 @@ class Entorno:
             self.recompensa -= 2
         if str(estados[self.estado_actual]) == "superior":
             print("Fin del juego, el coche ha llegado a la cima con un consumo de: " + str(self.recompensa))
+    
+    def renderizar(self):
+        print()
+        auxDibujo = []
+        for i in self.estados:
+            if str(self.estados[self.estado_actual]) == str(i):
+                auxDibujo.append("  *")
+            else:
+                auxDibujo.append(" ")
+        
+        for i in range(len(self.estados)):
+            print(auxDibujo[i], end="\t")
+        print()
+        for i in range(len(self.estados)):
+            print(list(estados)[i], end="\t")
+        print()
 
 
 acciones = {"gira_lento":0,"gira_rapido":1}
@@ -43,7 +58,8 @@ estados = [Estado("bajo"),Estado("medio"),Estado("alto"),Estado("superior")]
 entorno = Entorno("ejercicio2",estados, acciones)
 
 
-print(estados[entorno.estado_actual])
-entorno.realizar_accion(acciones["gira_rapido"])
-print(estados[entorno.estado_actual])
+#print(estados[entorno.estado_actual])
+#entorno.realizar_accion(acciones["gira_rapido"])
+#print(estados[entorno.estado_actual])
+entorno.renderizar()
 

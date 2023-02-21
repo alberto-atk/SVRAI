@@ -17,7 +17,6 @@ class Entorno:
         self.estados = estados
         self.acciones = acciones
         self.estado_actual = estados[choices(list(estados), k=1)[0]]
-        print(type(self.estado_actual))
 
     
     def definir_movimientos(self,estado1:Estado,accion,estado2:Estado):
@@ -29,12 +28,28 @@ class Entorno:
             self.recompensa -= 1
         else:
             self.recompensa += 2
+    
+    def renderizar(self):
+        print()
+        auxDibujo = []
+        for i in self.estados.values():
+            if self.estado_actual == i:
+                auxDibujo.append("  *")
+            else:
+                auxDibujo.append(" ")
+        
+        for i in range(len(self.estados)):
+            print(auxDibujo[i], end="\t")
+        print()
+        for i in range(len(self.estados)):
+            print(list(self.estados)[i], end="\t")
+        print()
 
 
 
 
 acciones = {"no_gira":0,"gira":1} #no gira y gira
-estados = {"alto": Estado("alto"), "medio": Estado("medio"), "bajo":Estado("bajo")}
+estados = {"bajo":Estado("bajo"), "medio": Estado("medio"),"alto": Estado("alto") }
 
 entorno = Entorno("ejercicio1",estados, acciones)
 
@@ -48,6 +63,5 @@ entorno.definir_movimientos(estados["bajo"],acciones["gira"],estados["medio"])
 entorno.definir_movimientos(estados["bajo"],acciones["no_gira"],estados["bajo"])
 
 
-print(entorno.estado_actual)
-entorno.realizar_accion(acciones["no_gira"])
-print(entorno.estado_actual)
+#entorno.realizar_accion(acciones["no_gira"])
+entorno.renderizar()
