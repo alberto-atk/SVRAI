@@ -6,15 +6,12 @@ class Entorno:
     estado_actual = [-1,-1]
     recompensa = 0
 
-    def __init__(self,id,estados:dict, acciones:dict):
+    def __init__(self,id,cuadricula:dict, acciones:dict):
         self.id = id
-        self.estados = estados
+        self.cuadricula = cuadricula
         self.acciones = acciones
-        #self.estado_actual[0] = random.randint(0, FILAS)
-        #self.estado_actual[1] = random.randint(0, COLUMNAS)
-
-        self.estado_actual[0] = 7
-        self.estado_actual[1] = 7
+        self.estado_actual[0] = random.randint(0, FILAS)
+        self.estado_actual[1] = random.randint(0, COLUMNAS)
 
     def realizar_accion(self,accion):
         pesos = []
@@ -43,32 +40,31 @@ class Entorno:
             if auxEstado == self.estado_actual:
                 self.recompensa -= 1
             else:
-                self.recompensa += self.estados[self.estado_actual[0]][self.estado_actual[1]]
+                self.recompensa += self.cuadricula[self.estado_actual[0]][self.estado_actual[1]]
             #print(self.recompensa)
             #print(self.estado_actual)
     
     def renderizar(self):
-        for i in self.estados:
-            for j in i:
-                if i == self.estado_actual[0] and j == self.estado_actual[j]:
+        for i in range(len(self.cuadricula)):
+            for j in range(len(self.cuadricula[i])):
+                if i == self.estado_actual[0] and j == self.estado_actual[1]:
                     print("\t", "*", end=" ")
                 else:
-                    print("\t", j, end=" ")
+                    print("\t", self.cuadricula[i][j], end=" ")  
             print()
-
 
 acciones = {"left":0,"right":1,"up":2,"down":3}
 
-estados = []
+cuadricula = []
 for i in range(10):
-    estados.append([])
+    cuadricula.append([])
     for j in range(10):
-        estados[i].append(0)
+        cuadricula[i].append(0)
 
-estados[7][8] = 10
-estados[2][7] = 3
-estados[4][3] = -5
-estados[7][3] = -10
+cuadricula[7][8] = 10
+cuadricula[2][7] = 3
+cuadricula[4][3] = -5
+cuadricula[7][3] = -10
 
 
 """
@@ -78,6 +74,6 @@ Para mostrar la matriz:
             print("\t", valor, end=" ")
         print()
 """
-entorno = Entorno("ejercicio3",estados, acciones)
+entorno = Entorno("ejercicio3",cuadricula, acciones)
 entorno.renderizar()
 #entorno.realizar_accion("right")
