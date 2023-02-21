@@ -8,7 +8,6 @@ class Estado:
         return self.id
 
 class Entorno:
-    movimientos = {}
     estado_actual = 0
     recompensa = 0
 
