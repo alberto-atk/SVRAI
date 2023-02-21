@@ -25,6 +25,10 @@ class Entorno:
 
     def realizar_accion(self,accion):
         self.estado_actual = self.movimientos[(self.estado_actual,accion)]
+        if str(self.estado_actual) == "bajo":
+            self.recompensa -= 1
+        else:
+            self.recompensa += 2
 
 
 
