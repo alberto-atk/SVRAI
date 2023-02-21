@@ -18,8 +18,6 @@ class Entorno:
         self.estado_actual = 0
         print(type(self.estado_actual))
 
-    
-    #def definir_movimientos(self,estado1:Estado,accion):
 
 
     def realizar_accion(self,accion):
@@ -31,8 +29,12 @@ class Entorno:
         print(accionFinal)
         if accionFinal == "gira_lento" and self.estado_actual > 0:
             self.estado_actual -= 1
+            self.recompensa -= 1
         elif accionFinal == "gira_rapido":
             self.estado_actual += 1
+            self.recompensa -= 2
+        if str(estados[self.estado_actual]) == "superior":
+            print("Fin del juego, el coche ha llegado a la cima con un consumo de: " + str(self.recompensa))
 
 
 acciones = {"gira_lento":0,"gira_rapido":1}
@@ -40,16 +42,6 @@ estados = [Estado("bajo"),Estado("medio"),Estado("alto"),Estado("superior")]
 
 entorno = Entorno("ejercicio2",estados, acciones)
 
-"""
-entorno.definir_movimientos(estados["alto"],acciones["gira_rapido"])
-entorno.definir_movimientos(estados["medio"],acciones["gira_rapido"])
-entorno.definir_movimientos(estados["bajo"],acciones["gira_rapido"])
-
-
-entorno.definir_movimientos(estados["alto"],acciones["gira_lento"],estados["bajo"])
-entorno.definir_movimientos(estados["medio"],acciones["gira_lento"],estados["bajo"])
-entorno.definir_movimientos(estados["bajo"],acciones["gira_lento"],estados["bajo"])
-"""
 
 print(estados[entorno.estado_actual])
 entorno.realizar_accion(acciones["gira_rapido"])
