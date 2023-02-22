@@ -1,4 +1,5 @@
 import random
+import time
 
 FILAS = 4
 COLUMNAS = 4
@@ -14,11 +15,10 @@ class Entorno:
             for j in range(COLUMNAS):
                 self.cuadricula[i].append(0)
 
-        self.cuadricula[0][0] = 4
-        self.cuadricula[2][0] = 2
+
         self.acciones = acciones
-        #self._anyadirNumero()
-        #self._anyadirNumero()
+        self._anyadirNumero()
+        self._anyadirNumero()
         #self.estado_actual[0] = random.randint(0, FILAS)
         #self.estado_actual[1] = random.randint(0, COLUMNAS)
 
@@ -35,85 +35,124 @@ class Entorno:
         self.cuadricula[casilla[0]][casilla[1]] = random.choice([2,4])
 
 
-    def comprimir_casillas(self,i1,j1,i2,j2,i3,j3):
-        if self.cuadricula[i1][j1] == self.cuadricula[i2][j2]:
-            self.cuadricula[i3][j3] = self.cuadricula[i1][j1] + self.cuadricula[i2][j2]
-        
+    def ganador(self):
+        for i in range(len(self.cuadricula)):
+            for j in range(len(self.cuadricula[0])):
+                if self.cuadricula[i][j] == 2048:
+                    return True
+        return False
+    
+    def sin_movimientos(self):
+        final = True
 
-    def desplazar_casillas_right(self,i,j):
-        aux1 = j
-        aux2 = j +1
-        while aux2 < COLUMNAS and self.cuadricula[i][aux2] == 0:
-            self.cuadricula[i][aux2] = self.cuadricula[i][aux1]
-            self.cuadricula[i][aux1] = 0
-            aux1 += 1
-            aux2 += 1  
+        for y in range(len(self.cuadricula)):
+            for x in range(len(self.cuadricula)-1):
+                if self.cuadricula[y][x] == self.cuadricula[y][x+1]:
+                    final = False
 
-    def desplazar_casillas_left(self,i,j):        
-        aux1 = j
-        aux2 = j -1
-        while aux2 >= 0 and self.cuadricula[i][aux2] == 0:
-            self.cuadricula[i][aux2] = self.cuadricula[i][aux1]
-            self.cuadricula[i][aux1] = 0
-            aux1 -= 1
-            aux2 -= 1  
+        for y in range(len(self.cuadricula)-1):
+            for x in range(len(self.cuadricula)):
+                if self.cuadricula[y][x] == self.cuadricula[y+1][x]:
+                    final = False
 
-    def desplazar_casillas_up(self,i,j):        
+        return final
 
-        aux1 = i
-        aux2 = i -1
-        while aux2 >= 0 and self.cuadricula[aux2][j] == 0:
-            self.cuadricula[aux2][j] = self.cuadricula[aux1][j]
-            self.cuadricula[aux1][j] = 0
-            aux1 -= 1
-            aux2 -= 1 
+    def mover_derecha(self):
+        for y in range(len(self.cuadricula)):
+            mezclas = []
+            for i in range(len(self.cuadricula)-1):
+                for x in range(-2, -len(self.cuadricula)-1, -1):
+                    if self.cuadricula[y][x] != 0 and self.cuadricula[y][x+1] == 0:
+                        self.cuadricula[y][x+1] = self.cuadricula[y][x]
+                        self.cuadricula[y][x] = 0
+                    elif self.cuadricula[y][x] != 0 and self.cuadricula[y][x] == self.cuadricula[y][x+1] and \
+                        x not in mezclas and x-1 not in mezclas:
+                        self.cuadricula[y][x+1] *= 2
+                        self.cuadricula[y][x] = 0
+                        mezclas.append(x)
 
-    def desplazar_casillas_down(self,i,j):
-            aux1 = i
-            aux2 = i +1
-            while aux2 < FILAS and self.cuadricula[aux2][j] == 0:
-                self.cuadricula[aux2][j] = self.cuadricula[aux1][j]
-                self.cuadricula[aux1][j] = 0
-                aux1 += 1
-                aux2 += 1 
+
+    def mover_izquierda(self):
+        for y in range(len(self.cuadricula)):
+            mezclas = []
+            for i in range(len(self.cuadricula)-1):
+                for x in range(1, len(self.cuadricula)):
+                    if self.cuadricula[y][x] != 0 and self.cuadricula[y][x-1] == 0:
+                        self.cuadricula[y][x-1] = self.cuadricula[y][x]
+                        self.cuadricula[y][x] = 0
+                    elif self.cuadricula[y][x] != 0 and self.cuadricula[y][x] == self.cuadricula[y][x-1] and \
+                        x not in mezclas and x+1 not in mezclas:
+                        self.cuadricula[y][x-1] *= 2
+                        self.cuadricula[y][x] = 0
+                        mezclas.append(x)
+
+
+    def mover_abajo(self):
+        for x in range(len(self.cuadricula)):
+            mezclas = []
+            for i in range(len(self.cuadricula)-1):
+                for y in range(-2, -len(self.cuadricula)-1, -1):
+                    if self.cuadricula[y][x] != 0 and self.cuadricula[y+1][x] == 0:
+                        self.cuadricula[y+1][x] = self.cuadricula[y][x]
+                        self.cuadricula[y][x] = 0
+                    elif self.cuadricula[y][x] != 0 and self.cuadricula[y][x] == self.cuadricula[y+1][x] and \
+                        y not in mezclas and y-1 not in mezclas:
+                        self.cuadricula[y+1][x] *= 2
+                        self.cuadricula[y][x] = 0
+                        mezclas.append(y)
+
+
+    def mover_arriba(self):
+        for x in range(len(self.cuadricula)):
+            mezclas = []
+            for i in range(len(self.cuadricula)-1):
+                for y in range(1, len(self.cuadricula)):
+                    if self.cuadricula[y][x] != 0 and self.cuadricula[y-1][x] == 0:
+                        self.cuadricula[y-1][x] = self.cuadricula[y][x]
+                        self.cuadricula[y][x] = 0
+                    elif self.cuadricula[y][x] != 0 and self.cuadricula[y][x] == self.cuadricula[y-1][x] and \
+                        y not in mezclas and y+1 not in mezclas:
+                        self.cuadricula[y-1][x] *= 2
+                        self.cuadricula[y][x] = 0
+                        mezclas.append(y)
+
+
 
     def realizar_accion(self,accion):
         if accion == "right":
-            for i in range(len(self.cuadricula)):
-                for j in reversed(range(len(self.cuadricula[i]))):
-                    if self.cuadricula[i][j] != 0:
-                        self.desplazar_casillas_right(i,j)
+            self.mover_derecha()
         elif accion == "left":
-            for i in range(len(self.cuadricula)):
-                for j in range(len(self.cuadricula[i])):
-                    if self.cuadricula[i][j] != 0:
-                        self.desplazar_casillas_left(i,j)
+            self.mover_izquierda()
         elif accion == "up":
-            for i in range(len(self.cuadricula)):
-                for j in range(len(self.cuadricula[i])):
-                    if self.cuadricula[i][j] != 0:
-                        self.desplazar_casillas_up(i,j)
+            self.mover_arriba()
         elif accion == "down":
-            for i in reversed(range(len(self.cuadricula))):
-                for j in reversed(range(len(self.cuadricula[i]))):
-                    if self.cuadricula[i][j] != 0:
-                        self.desplazar_casillas_down(i,j)
-                        
-                        
-        #self._anyadirNumero()
+            self.mover_abajo()
+
+        self._anyadirNumero()
+        if self.ganador():
+            print("Ha ganado el juego")
+            return
+        if self.sin_movimientos():
+            print("Ha perdido, se ha quedado sin movimientos")
+            return
     
     def renderizar(self):
         for i in self.cuadricula:
             for j in i:
                     print("\t", j, end=" ")
             print()
+        print()
 
 
 acciones = {"left":0,"right":1,"up":2,"down":3}
 
 
 entorno = Entorno("ejercicio4", acciones)
-entorno.renderizar()
-entorno.realizar_accion("down")
-print()
-entorno.renderizar()
+for i in range(50):
+
+    accion = random.choices(list(acciones), k=1)[0]
+    entorno.renderizar()
+    entorno.realizar_accion(accion)
+    print(accion)
+    entorno.renderizar()
+    time.sleep(5.0)
