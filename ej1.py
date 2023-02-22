@@ -65,3 +65,5 @@ entorno.definir_movimientos(estados["bajo"],acciones["no_gira"],estados["bajo"])
 
 #entorno.realizar_accion(acciones["no_gira"])
 entorno.renderizar()
+entorno.realizar_accion(acciones["no_gira"])
+entorno.renderizar()
