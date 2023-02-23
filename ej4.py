@@ -3,7 +3,7 @@ import time
 
 FILAS = 4
 COLUMNAS = 4
-class Entorno:
+class Entorno4:
     recompensa = 0
 
     def __init__(self,id,acciones:dict):
@@ -68,6 +68,7 @@ class Entorno:
                     elif self.cuadricula[y][x] != 0 and self.cuadricula[y][x] == self.cuadricula[y][x+1] and \
                         x not in mezclas and x-1 not in mezclas:
                         self.cuadricula[y][x+1] *= 2
+                        self.recompensa += self.cuadricula[y][x+1]
                         self.cuadricula[y][x] = 0
                         mezclas.append(x)
 
@@ -83,6 +84,7 @@ class Entorno:
                     elif self.cuadricula[y][x] != 0 and self.cuadricula[y][x] == self.cuadricula[y][x-1] and \
                         x not in mezclas and x+1 not in mezclas:
                         self.cuadricula[y][x-1] *= 2
+                        self.recompensa += self.cuadricula[y][x-1]
                         self.cuadricula[y][x] = 0
                         mezclas.append(x)
 
@@ -98,6 +100,7 @@ class Entorno:
                     elif self.cuadricula[y][x] != 0 and self.cuadricula[y][x] == self.cuadricula[y+1][x] and \
                         y not in mezclas and y-1 not in mezclas:
                         self.cuadricula[y+1][x] *= 2
+                        self.recompensa += self.cuadricula[y+1][x]
                         self.cuadricula[y][x] = 0
                         mezclas.append(y)
 
@@ -113,6 +116,7 @@ class Entorno:
                     elif self.cuadricula[y][x] != 0 and self.cuadricula[y][x] == self.cuadricula[y-1][x] and \
                         y not in mezclas and y+1 not in mezclas:
                         self.cuadricula[y-1][x] *= 2
+                        self.recompensa += self.cuadricula[y-1][x]
                         self.cuadricula[y][x] = 0
                         mezclas.append(y)
 
@@ -147,12 +151,12 @@ class Entorno:
 acciones = {"left":0,"right":1,"up":2,"down":3}
 
 
-entorno = Entorno("ejercicio4", acciones)
-for i in range(50):
+entorno = Entorno4("ejercicio4", acciones)
+for i in range(5):
 
     accion = random.choices(list(acciones), k=1)[0]
-    entorno.renderizar()
     entorno.realizar_accion(accion)
     print(accion)
     entorno.renderizar()
-    time.sleep(5.0)
+    
+print(entorno.recompensa)

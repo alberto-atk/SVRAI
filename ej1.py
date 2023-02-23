@@ -7,7 +7,7 @@ class Estado:
     def __str__(self) -> str:
         return self.id
 
-class Entorno:
+class Entorno1:
     movimientos = {}
     estado_actual = Estado("estado_indeterminado")
     recompensa = 0
@@ -51,7 +51,7 @@ class Entorno:
 acciones = {"no_gira":0,"gira":1} #no gira y gira
 estados = {"bajo":Estado("bajo"), "medio": Estado("medio"),"alto": Estado("alto") }
 
-entorno = Entorno("ejercicio1",estados, acciones)
+entorno = Entorno1("ejercicio1",estados, acciones)
 
 entorno.definir_movimientos(estados["alto"],acciones["gira"],estados["alto"])
 entorno.definir_movimientos(estados["alto"],acciones["no_gira"],estados["medio"])

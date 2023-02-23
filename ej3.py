@@ -2,7 +2,7 @@ import random
 
 FILAS = 9
 COLUMNAS = 9
-class Entorno:
+class Entorno3:
     estado_actual = [-1,-1]
     recompensa = 0
     estado_recompensa = False
@@ -88,7 +88,7 @@ Para mostrar la matriz:
             print("\t", valor, end=" ")
         print()
 """
-entorno = Entorno("ejercicio3",cuadricula, acciones)
+entorno = Entorno3("ejercicio3",cuadricula, acciones)
 entorno.renderizar()
 entorno.realizar_accion("right")
 print()

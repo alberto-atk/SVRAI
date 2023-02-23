@@ -7,7 +7,7 @@ class Estado:
     def __str__(self) -> str:
         return self.id
 
-class Entorno:
+class Entorno2:
     estado_actual = 0
     recompensa = 0
 
@@ -55,7 +55,7 @@ class Entorno:
 acciones = {"gira_lento":0,"gira_rapido":1}
 estados = [Estado("bajo"),Estado("medio"),Estado("alto"),Estado("superior")]
 
-entorno = Entorno("ejercicio2",estados, acciones)
+entorno = Entorno2("ejercicio2",estados, acciones)
 
 
 #print(estados[entorno.estado_actual])
