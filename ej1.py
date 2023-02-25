@@ -23,11 +23,23 @@ class Entorno1:
         self.movimientos[(estado1,accion)] = estado2
 
     def realizar_accion(self,accion):
+        estado_anterior = self.estado_actual
         self.estado_actual = self.movimientos[(self.estado_actual,accion)]
         if str(self.estado_actual) == "bajo":
             self.recompensa -= 1
+            return 1, self.estado_actual, -1
         else:
             self.recompensa += 2
+            return 1, self.estado_actual, 2
+        
+    def nuevo_estado(self,estado,accion):
+        nuevo_estado = self.movimientos[(estado,accion)]
+        if nuevo_estado == 0:
+            self.recompensa -= 1
+            return 1, nuevo_estado, -1
+        else:
+            self.recompensa += 2
+            return 1, nuevo_estado, 2
     
     def renderizar(self):
         print()
@@ -47,9 +59,9 @@ class Entorno1:
 
 
 
-
-acciones = {"no_gira":0,"gira":1} #no gira y gira
-estados = {"bajo":Estado("bajo"), "medio": Estado("medio"),"alto": Estado("alto") }
+"""
+acciones = [0,1] #no gira y gira
+estados = [0,1,2]
 
 entorno = Entorno1("ejercicio1",estados, acciones)
 
@@ -67,3 +79,4 @@ entorno.definir_movimientos(estados["bajo"],acciones["no_gira"],estados["bajo"])
 entorno.renderizar()
 entorno.realizar_accion(acciones["no_gira"])
 entorno.renderizar()
+"""

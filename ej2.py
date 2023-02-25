@@ -19,11 +19,33 @@ class Entorno2:
 
 
 
+    def nuevo_estado(self,estado,accion):
+        if(accion == self.acciones["gira_lento"]):
+            accionFinal = choices(population=list(self.acciones),k=1,weights=[0.7,0.3])[0]
+        elif(accion == self.acciones["gira_rapido"]):
+            accionFinal = choices(population=list(self.acciones),k=1,weights=[0.3,0.7])[0]
+        
+        if accionFinal == "gira_lento":
+            self.estado_actual = 0
+            self.recompensa -= 1
+            if accion == accionFinal:
+                return 0.7, self.estado_actual, -1
+            else:
+                return 0.3, self.estado_actual, -1
+        elif accionFinal == "gira_rapido":
+            self.estado_actual += 1
+            self.recompensa -= 2
+            if accion == accionFinal:
+                return 0.7, self.estado_actual, -2
+            else:
+                return 0.3, self.estado_actual, -2
+
+
     def realizar_accion(self,accion):
-        if(accion == acciones["gira_lento"]):
-            accionFinal = choices(population=list(acciones),k=1,weights=[0.7,0.3])[0]
-        elif(accion == acciones["gira_rapido"]):
-            accionFinal = choices(population=list(acciones),k=1,weights=[0.3,0.7])[0]
+        if(accion == self.acciones["gira_lento"]):
+            accionFinal = choices(population=list(self.acciones),k=1,weights=[0.7,0.3])[0]
+        elif(accion == self.acciones["gira_rapido"]):
+            accionFinal = choices(population=list(self.acciones),k=1,weights=[0.3,0.7])[0]
         
         print(accionFinal)
         if accionFinal == "gira_lento" and self.estado_actual > 0:
@@ -32,7 +54,7 @@ class Entorno2:
         elif accionFinal == "gira_rapido":
             self.estado_actual += 1
             self.recompensa -= 2
-        if str(estados[self.estado_actual]) == "superior":
+        if str(self.estados[self.estado_actual]) == "superior":
             print("Fin del juego, el coche ha llegado a la cima con un consumo de: " + str(self.recompensa))
     
     def renderizar(self):
@@ -48,10 +70,10 @@ class Entorno2:
             print(auxDibujo[i], end="\t")
         print()
         for i in range(len(self.estados)):
-            print(list(estados)[i], end="\t")
+            print(list(self.estados)[i], end="\t")
         print()
 
-
+"""
 acciones = {"gira_lento":0,"gira_rapido":1}
 estados = [Estado("bajo"),Estado("medio"),Estado("alto"),Estado("superior")]
 
@@ -63,3 +85,4 @@ entorno = Entorno2("ejercicio2",estados, acciones)
 #print(estados[entorno.estado_actual])
 entorno.renderizar()
 
+"""

@@ -147,7 +147,7 @@ class Entorno4:
             print()
         print()
 
-
+"""
 acciones = {"left":0,"right":1,"up":2,"down":3}
 
 
@@ -160,3 +160,4 @@ for i in range(5):
     entorno.renderizar()
     
 print(entorno.recompensa)
+"""

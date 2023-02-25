@@ -1,9 +1,9 @@
 import random
 
-FILAS = 9
-COLUMNAS = 9
+FILAS = 10
+COLUMNAS = 10
 class Entorno3:
-    estado_actual = [-1,-1]
+    posicion_actual = [-1,-1]
     recompensa = 0
     estado_recompensa = False
 
@@ -11,22 +11,29 @@ class Entorno3:
         self.id = id
         self.cuadricula = cuadricula
         self.acciones = acciones
-        #self.estado_actual[0] = random.randint(0, FILAS)
-        #self.estado_actual[1] = random.randint(0, COLUMNAS)
-        self.estado_actual[0] = 7
-        self.estado_actual[1] = 7
+        #self.posicion_actual[0] = random.randint(0, FILAS)
+        #self.posicion_actual[1] = random.randint(0, COLUMNAS)
+        self.posicion_actual[0] = 7
+        self.posicion_actual[1] = 7
 
     def realizar_accion(self,accion):
         pesos = []
-        if accion in acciones:
+        if accion in self.acciones:
             if self.estado_recompensa:
                 #Se suma la recompensa en el siguiente estado
-                self.recompensa += self.cuadricula[self.estado_actual[0]][self.estado_actual[1]]
+                if self.posicion_actual[0] == 4 and self.posicion_actual[1] == 3:
+                    self.recompensa -= 5
+                elif self.posicion_actual[0] == 7 and self.posicion_actual[1] == 3:
+                    self.recompensa -= 10
+                elif self.posicion_actual[0] == 7 and self.posicion_actual[1] == 8:
+                    self.recompensa += 10
+                elif self.posicion_actual[0] == 2 and self.posicion_actual[1] == 7:
+                    self.recompensa += 3
                 self.estado_recompensa = False
                 #Se mueve a una esquina
                 nueva_casilla = random.choice([(0,0),(FILAS,0),(0,COLUMNAS),(FILAS,COLUMNAS)])
-                self.estado_actual[0] = nueva_casilla[0]
-                self.estado_actual[1] = nueva_casilla[1]
+                self.posicion_actual[0] = nueva_casilla[0]
+                self.posicion_actual[1] = nueva_casilla[1]
             else:
                 #Generacion de los pesos para realizar un movimiento u otro
                 for i in (list(self.acciones)):
@@ -36,32 +43,91 @@ class Entorno3:
                         pesos.append(0.1)
 
                 #Obtencion de la accion
-                #print(self.estado_actual)
-                auxEstado = self.estado_actual.copy()
-                accionFinal = random.choices(population=list(acciones),k=1,weights=pesos)[0]
+                #print(self.posicion_actual)
+                auxEstado = self.posicion_actual.copy()
+                accionFinal = random.choices(population=list(self.acciones),k=1,weights=pesos)[0]
                 #print(accionFinal)
-                if accionFinal == "up" and self.estado_actual[0] > 0:
-                    self.estado_actual[0] -= 1
-                elif accionFinal == "right" and self.estado_actual[1] < COLUMNAS:
-                    self.estado_actual[1] += 1
-                elif accionFinal == "left" and self.estado_actual[1] > 0:
-                    self.estado_actual[1] -= 1
-                elif accionFinal == "down" and self.estado_actual[0] < FILAS:
-                    self.estado_actual[1] += 1
+                if accionFinal == "up" and self.posicion_actual[0] > 0:
+                    self.posicion_actual[0] -= 1
+                elif accionFinal == "right" and self.posicion_actual[1] < COLUMNAS:
+                    self.posicion_actual[1] += 1
+                elif accionFinal == "left" and self.posicion_actual[1] > 0:
+                    self.posicion_actual[1] -= 1
+                elif accionFinal == "down" and self.posicion_actual[0] < FILAS:
+                    self.posicion_actual[1] += 1
                 
-                if auxEstado == self.estado_actual:
+                if auxEstado == self.posicion_actual:
                     self.recompensa -= 1
-                elif self.cuadricula[self.estado_actual[0]][self.estado_actual[1]] < 0:
-                    self.recompensa += self.cuadricula[self.estado_actual[0]][self.estado_actual[1]]
-                else:
+                elif ((self.posicion_actual[0] == 4 and self.posicion_actual[1] == 3) or
+                      (self.posicion_actual[0] == 7 and self.posicion_actual[1] == 3) or
+                      (self.posicion_actual[0] == 7 and self.posicion_actual[1] == 8) or
+                      (self.posicion_actual[0] == 2 and self.posicion_actual[1] == 7)):
                     self.estado_recompensa = True
+                else:
+                    self.estado_recompensa = False
                 #print(self.recompensa)
-                #print(self.estado_actual)
+                #print(self.posicion_actual)
+
+    def nuevo_estado_tabla_p(self,estado,accion):
+        if accion in self.acciones.values():
+            recompensa = 0
+            if estado == 42:
+                recompensa = 5
+                return [(0.25,j,recompensa) for j in [0,9,90,99]]
+            elif estado == 73:
+                recompensa = -10
+                return [(0.25,j,recompensa) for j in [0,9,90,99]]
+            elif estado == 78:
+                recompensa = 10
+                return [(0.25,j,recompensa) for j in [0,9,90,99]]
+            elif estado == 27:
+                recompensa = 3
+                #Se mueve a una esquina
+                return [(0.25,j,recompensa) for j in [0,9,90,99]]
+
+            fila_tabla = []
+            nuevoEstado = 0
+
+            for i in self.acciones.values():
+                nuevoEstado = self.obtener_nuevo_estado(estado,i)
+                if i == accion:
+                    fila_tabla.append((0.7,nuevoEstado,-1 if estado == nuevoEstado else 0))
+                else:    
+                    fila_tabla.append((0.1,nuevoEstado,-1 if estado == nuevoEstado else 0))
+            return fila_tabla
+
+    def obtener_nuevo_estado(self,estado,accion):
+        if estado+10 >= 100 and accion == 3:
+            return estado
+        elif estado-10 < 0 and accion == 2:
+            return estado
+        elif estado % 10 == 0 and accion == 0:
+            return estado 
+        elif estado % 10 == 9 and accion == 1:
+            return estado
+
+        if accion == 0:
+            return estado - 1
+        if accion == 1:
+            return estado + 1
+        if accion == 2:
+            return estado - 10
+        if accion == 3:
+            return estado + 10
+        
+    def generar_tabla_p(self):
+        P = {}
+        for i in range(COLUMNAS*FILAS):
+            acciones = {}
+            for accion in self.acciones.values():
+                acciones[accion] = self.nuevo_estado_tabla_p(i,accion) 
+            P[i] = acciones
+        return P
     
     def renderizar(self):
         for i in range(len(self.cuadricula)):
             for j in range(len(self.cuadricula[i])):
-                if i == self.estado_actual[0] and j == self.estado_actual[1]:
+                if i == self.posicion_actual[0] and j == self.posicion_actual[1]:
                     print("\t", "*", end=" ")
                 else:
                     print("\t", self.cuadricula[i][j], end=" ")  
@@ -70,31 +136,20 @@ class Entorno3:
 acciones = {"left":0,"right":1,"up":2,"down":3}
 
 cuadricula = []
-for i in range(10):
+k = 0
+for i in range(FILAS):
     cuadricula.append([])
-    for j in range(10):
-        cuadricula[i].append(0)
-
-cuadricula[7][8] = 10
-cuadricula[2][7] = 3
-cuadricula[4][3] = -5
-cuadricula[7][3] = -10
+    for j in range(COLUMNAS):
+        cuadricula[i].append(k)
+        k += 1
+    #k += 1
 
 
-"""
-Para mostrar la matriz:
-    for fila in estados:
-        for valor in fila:
-            print("\t", valor, end=" ")
-        print()
-"""
+for i in range(FILAS):
+    for j in range(COLUMNAS):
+            print("\t", cuadricula[i][j], end=" ")  
+    print()
+
+
 entorno = Entorno3("ejercicio3",cuadricula, acciones)
-entorno.renderizar()
-entorno.realizar_accion("right")
-print()
-entorno.renderizar()
-entorno.realizar_accion("up")
-print()
-print(entorno.recompensa)
-print()
-entorno.renderizar()
+print(entorno.generar_tabla_p()[42])
