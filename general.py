@@ -1,6 +1,6 @@
 from ej1 import *
 from ej2 import *
-#from ej3 import *
+from ej3 import *
 from ej4 import *
 import numpy as np
 
@@ -57,15 +57,16 @@ def ejercicio4():
     return entorno
 
 
-def valueIteration():
+def valueIteration12(env):
     def lookahead(U,s,a,gamma=0.8):
+        suma = 0
         for sp in range(len(estados)):
-            return R[s][a][sp] + gamma*np.sum(T[s][a][sp]*U[sp])
-
+            suma += R[s][a][sp] + gamma*np.sum(T[s][a][sp]*U[sp])
+        return suma
+    
     def backup(env,U,estado):
         return max([lookahead(U,estado,a) for a in list(env.acciones.values())])
 
-    env = ejercicio2()
     nS = len(env.estados)
     nA = len(env.acciones)
 
@@ -80,11 +81,83 @@ def valueIteration():
             R[state_number,a,next_s] = rew
             T[state_number,a,:]/=np.sum(T[state_number,a,:])
 
-
+    print("T: " + str(T))
+    print("R: " + str(R))
     U = [0.0 for s in range(nS)]
-    max_iters = 1000
+    max_iters = 10000
     for i in range(max_iters):
         U = [backup(env,U,s) for s in range(nS)]
     print("U: " + str(U))
 
-valueIteration()
+def qlearning(env):
+    q_table = np.zeros([env.nestados, env.nacciones])
+    import random
+
+    # Hyperparameters
+    alpha = 0.1
+    gamma = 0.6
+    epsilon = 0.1
+
+    # For plotting metrics
+    all_epochs = []
+    all_penalties = []
+    for i in range(1, 1001):
+        state = env.reset()
+
+        epochs, penalties, reward, = 0, 0, 0
+        done = False
+        
+        while epochs < 1000:
+            if random.uniform(0, 1) < epsilon:
+                action = random.choice(list(env.acciones.values()) if isinstance(env.acciones,dict) else env.acciones) # Explore action space
+            else:
+                action = np.argmax(q_table[state]) # Exploit learned values
+            next_state, reward = env.realizar_accion(action) 
+            
+            old_value = q_table[state, action]
+            next_max = np.max(q_table[next_state])
+            
+            new_value = (1 - alpha) * old_value + alpha * (reward + gamma * next_max)
+            q_table[state, action] = new_value
+
+            if reward == -10:
+                penalties += 1
+            state = next_state
+            epochs += 1
+            
+        if i % 100 == 0:
+            print(f"Episode: {i}")
+
+    print("Training finished.\n")
+
+
+    total_epochs, total_penalties = 0, 0
+    episodes = 100
+
+    for _ in range(episodes):
+        state = env.reset()
+        epochs, penalties, reward = 0, 0, 0
+        
+        done = False
+        
+        while epochs < 1000:
+            action = np.argmax(q_table[state])
+            state, reward= env.realizar_accion(action)
+
+            if reward == -10:
+                penalties += 1
+
+            epochs += 1
+
+        total_penalties += penalties
+        total_epochs += epochs
+
+    print(f"Results after {episodes} episodes:")
+    print(f"Average timesteps per episode: {total_epochs / episodes}")
+    print(f"Average penalties per episode: {total_penalties / episodes}")
+    return q_table
+
+#valueIteration12(ejercicio2())
+q_table = valueIteration12(ejercicio1())
+print(q_table)
+

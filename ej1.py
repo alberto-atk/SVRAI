@@ -12,25 +12,33 @@ class Entorno1:
     estado_actual = Estado("estado_indeterminado")
     recompensa = 0
 
-    def __init__(self,id,estados:dict, acciones:dict):
+    def __init__(self,id,estados, acciones):
         self.id = id
         self.estados = estados
         self.acciones = acciones
         self.estado_actual = estados[choices(list(estados), k=1)[0]]
+        self.nestados = len(estados)
+        self.nacciones = len(acciones)
 
+    def reset(self):
+        acciones = {"no_gira":0,"gira":1} #no gira y gira
+        estados = {"bajo":0, "medio": 1,"alto": 2 }
+        self.__init__("ejercicio1",estados,acciones)
+        return self.estado_actual
     
-    def definir_movimientos(self,estado1:Estado,accion,estado2:Estado):
+    def definir_movimientos(self,estado1,accion,estado2):
         self.movimientos[(estado1,accion)] = estado2
 
     def realizar_accion(self,accion):
-        estado_anterior = self.estado_actual
-        self.estado_actual = self.movimientos[(self.estado_actual,accion)]
-        if str(self.estado_actual) == "bajo":
-            self.recompensa -= 1
-            return 1, self.estado_actual, -1
-        else:
-            self.recompensa += 2
-            return 1, self.estado_actual, 2
+        if accion in self.acciones.values():
+            estado_anterior = self.estado_actual
+            self.estado_actual = self.movimientos[(self.estado_actual,accion)]
+            if str(self.estado_actual) == "bajo":
+                self.recompensa -= 1
+                return self.estado_actual, -1
+            else:
+                self.recompensa += 2
+                return self.estado_actual, 2
         
     def nuevo_estado(self,estado,accion):
         nuevo_estado = self.movimientos[(estado,accion)]

@@ -16,8 +16,14 @@ class Entorno2:
         self.estados = estados
         self.acciones = acciones
         self.estado_actual = 0
+        self.nestados = len(estados)
+        self.nacciones = len(acciones)
 
-
+    def reset(self):
+        acciones = {"gira_lento":0,"gira_rapido":1}
+        estados = [Estado("bajo"),Estado("medio"),Estado("alto"),Estado("superior")]
+        self.__init__("ejercicio2",estados,acciones)
+        return self.estado_actual
 
     def nuevo_estado(self,estado,accion):
         if(accion == self.acciones["gira_lento"]):
@@ -31,6 +37,7 @@ class Entorno2:
             if accion == accionFinal:
                 return 0.7, self.estado_actual, -1
             else:
+                print("as")
                 return 0.3, self.estado_actual, -1
         elif accionFinal == "gira_rapido":
             self.estado_actual += 1
