@@ -35,10 +35,10 @@ class Entorno1:
             self.estado_actual = self.movimientos[(self.estado_actual,accion)]
             if str(self.estado_actual) == "bajo":
                 self.recompensa -= 1
-                return self.estado_actual, -1
+                return self.estado_actual, -1, False
             else:
                 self.recompensa += 2
-                return self.estado_actual, 2
+                return self.estado_actual, 2, False
         
     def nuevo_estado(self,estado,accion):
         nuevo_estado = self.movimientos[(estado,accion)]

@@ -35,20 +35,20 @@ class Entorno3:
             if self.estado_actual == 42:
                 self.recompensa = 5
                 self.estado_actual = random.choice([0,9,90,99])
-                return (self.estado_actual,self.recompensa)
+                return self.estado_actual,self.recompensa, False
             elif self.estado_actual == 73:
                 self.recompensa = -10
                 self.estado_actual = random.choice([0,9,90,99])
-                return (self.estado_actual,self.recompensa)
+                return self.estado_actual,self.recompensa, False
             elif self.estado_actual == 78:
                 self.recompensa = 10
                 self.estado_actual = random.choice([0,9,90,99])
-                return (self.estado_actual,self.recompensa)
+                return self.estado_actual,self.recompensa, False
             elif self.estado_actual == 27:
                 self.recompensa = 3
                 #Se mueve a una esquina
                 self.estado_actual = random.choice([0,9,90,99])
-                return (self.estado_actual,self.recompensa)
+                return self.estado_actual,self.recompensa, False
 
             #Generacion de los pesos para realizar un movimiento u otro
             for i in (list(self.acciones)):
@@ -65,7 +65,7 @@ class Entorno3:
             
             if auxEstado == self.posicion_actual:
                 self.recompensa -= 1
-            return (self.estado_actual,self.recompensa)
+            return self.estado_actual,self.recompensa, False
 
     def nuevo_estado_tabla_p(self,estado,accion):
         if accion in self.acciones.values():

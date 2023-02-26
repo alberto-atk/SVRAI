@@ -54,7 +54,6 @@ class Entorno2:
         elif(accion == self.acciones["gira_rapido"]):
             accionFinal = choices(population=list(self.acciones),k=1,weights=[0.3,0.7])[0]
         
-        print(accionFinal)
         if accionFinal == "gira_lento" and self.estado_actual > 0:
             self.estado_actual -= 1
             self.recompensa -= 1
@@ -62,7 +61,9 @@ class Entorno2:
             self.estado_actual += 1
             self.recompensa -= 2
         if str(self.estados[self.estado_actual]) == "superior":
-            print("Fin del juego, el coche ha llegado a la cima con un consumo de: " + str(self.recompensa))
+            return self.estado_actual, self.recompensa, True
+        return self.estado_actual, self.recompensa, False
+        
     
     def renderizar(self):
         print()
