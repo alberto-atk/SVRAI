@@ -115,6 +115,7 @@ def valueIterationEjs12(env):
 
     estados = list(env.estados.values())
     acciones = list(env.acciones.values())
+    print(acciones)
     T = np.zeros([nS, nA, nS])
     R = np.zeros([nS, nA, nS])
     for state_number,s in enumerate(estados):
@@ -204,7 +205,7 @@ def qlearning(env):
     print(f"Average penalties per episode: {total_penalties / episodes}")
     return q_table
 
-print(valueIterationEj3(ejercicio3()))
+print(valueIterationEjs12(ejercicio1()))
 #q_table = qlearning(ejercicio3())
 #print(q_table)
 

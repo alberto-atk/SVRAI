@@ -31,21 +31,23 @@ class Entorno2:
         elif(accion == self.acciones["gira_rapido"]):
             accionFinal = choices(population=list(self.acciones),k=1,weights=[0.3,0.7])[0]
         
+        nuevo_estado = 0
         if accionFinal == "gira_lento":
-            self.estado_actual = 0
+            nuevo_estado = 0
             self.recompensa -= 1
             if accion == accionFinal:
-                return 0.7, self.estado_actual, -1
+                return 0.7, nuevo_estado, -1
             else:
-                print("as")
-                return 0.3, self.estado_actual, -1
+                return 0.3, nuevo_estado, -1
         elif accionFinal == "gira_rapido":
-            self.estado_actual += 1
+            if estado == 3:
+                return 1.0, estado,-2
+            nuevo_estado = estado + 1
             self.recompensa -= 2
             if accion == accionFinal:
-                return 0.7, self.estado_actual, -2
+                return 0.7, nuevo_estado, -2
             else:
-                return 0.3, self.estado_actual, -2
+                return 0.3, nuevo_estado, -2
 
 
     def realizar_accion(self,accion):

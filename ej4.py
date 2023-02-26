@@ -19,6 +19,7 @@ class Entorno4:
         self.acciones = acciones
         self._anyadirNumero()
         self._anyadirNumero()
+        self.estado_actual = self.cuadricula
         #self.estado_actual[0] = random.randint(0, FILAS)
         #self.estado_actual[1] = random.randint(0, COLUMNAS)
 
@@ -87,6 +88,7 @@ class Entorno4:
                         self.recompensa += self.cuadricula[y][x-1]
                         self.cuadricula[y][x] = 0
                         mezclas.append(x)
+        
 
 
     def mover_abajo(self):
@@ -103,6 +105,7 @@ class Entorno4:
                         self.recompensa += self.cuadricula[y+1][x]
                         self.cuadricula[y][x] = 0
                         mezclas.append(y)
+        
 
 
     def mover_arriba(self):
@@ -119,6 +122,7 @@ class Entorno4:
                         self.recompensa += self.cuadricula[y-1][x]
                         self.cuadricula[y][x] = 0
                         mezclas.append(y)
+        
 
 
 
@@ -135,10 +139,11 @@ class Entorno4:
         self._anyadirNumero()
         if self.ganador():
             print("Ha ganado el juego")
-            return
+            return self.cuadricula, self.recompensa, True
         if self.sin_movimientos():
             print("Ha perdido, se ha quedado sin movimientos")
-            return
+            return self.cuadricula, self.recompensa, False
+        return self.cuadricula, self.recompensa, False
     
     def renderizar(self):
         for i in self.cuadricula:
@@ -147,11 +152,13 @@ class Entorno4:
             print()
         print()
 
-"""
+
 acciones = {"left":0,"right":1,"up":2,"down":3}
 
 
 entorno = Entorno4("ejercicio4", acciones)
+print(entorno.realizar_accion(1))
+"""
 for i in range(5):
 
     accion = random.choices(list(acciones), k=1)[0]
