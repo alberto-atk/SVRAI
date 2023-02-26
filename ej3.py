@@ -13,6 +13,7 @@ class Entorno3:
         self.nestados = FILAS*COLUMNAS
         self.nacciones = len(acciones)
         self.estado_actual = random.randint(0, FILAS*COLUMNAS-1)
+        self.P = self.generar_tabla_p()
 
     def reset(self):
         acciones = {"left":0,"right":1,"up":2,"down":3}
