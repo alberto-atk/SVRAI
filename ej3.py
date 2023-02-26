@@ -152,5 +152,5 @@ for i in range(FILAS):
 
 
 entorno = Entorno3("ejercicio3",cuadricula, acciones)
-print(entorno.generar_tabla_p()[42])
+print(entorno.generar_tabla_p())
 """

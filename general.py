@@ -10,15 +10,6 @@ def ejercicio1():
     estados = {"bajo":0, "medio": 1,"alto": 2 }
 
     entorno = Entorno1("ejercicio1",estados, acciones)
-
-    entorno.definir_movimientos(estados["alto"],acciones["gira"],estados["alto"])
-    entorno.definir_movimientos(estados["alto"],acciones["no_gira"],estados["medio"])
-
-    entorno.definir_movimientos(estados["medio"],acciones["gira"],estados["alto"])
-    entorno.definir_movimientos(estados["medio"],acciones["no_gira"],estados["bajo"])
-
-    entorno.definir_movimientos(estados["bajo"],acciones["gira"],estados["medio"])
-    entorno.definir_movimientos(estados["bajo"],acciones["no_gira"],estados["bajo"])
     return entorno
 
 
@@ -62,9 +53,13 @@ def valueIterationEj3(env,discount_factor=0.999, max_iteration=1000):
         action_values = np.zeros(env.nacciones)
         
         for action in range(env.nacciones):
-            for probablity, next_state, reward, in env.P[state][action]:
+            if isinstance(env.P[state][action],list):
+                for probablity, next_state, reward in env.P[state][action]:
+                    action_values[action] += probablity * (reward + (discount_factor * V[next_state]))
+            else:
+                probablity, next_state, reward = env.P[state][action]
                 action_values[action] += probablity * (reward + (discount_factor * V[next_state]))
-                
+
         return action_values
     
     def update_policy(env, policy, V, discount_factor):        
@@ -132,6 +127,56 @@ def valueIterationEjs12(env):
     for i in range(max_iters):
         U = [backup(env,U,s) for s in range(nS)]
     print("U: " + str(U))
+
+
+
+def policyIterationEj3(env, discount_factor = 0.999, max_iteration = 1000):
+    def policy_eval(env, policy, V, discount_factor):
+        policy_value = np.zeros(env.nestados)
+        for state, action in enumerate(policy):
+            for probablity, next_state, reward in env.P[state][action]:
+                policy_value[state] += probablity * (reward + (discount_factor * V[next_state]))
+                
+        return policy_value
+    def one_step_lookahead(env, state, V , discount_factor = 0.99):
+        action_values = np.zeros(env.nacciones)
+        
+        for action in range(env.nacciones):
+            for probablity, next_state, reward, in env.P[state][action]:
+                action_values[action] += probablity * (reward + (discount_factor * V[next_state]))
+                
+        return action_values
+    def update_policy(env, policy, V, discount_factor):        
+        for state in range(env.nestados):
+            action_values = one_step_lookahead(env, state, V, discount_factor)
+            
+            policy[state] =  np.argmax(action_values)
+            
+        return policy
+
+        # intialize the state-Value function
+    V = np.zeros(env.nestados)
+    
+    # intialize a random policy
+    policy = np.random.randint(0, 4, env.nestados)
+    policy_prev = np.copy(policy)
+    
+    for i in range(max_iteration):
+        
+        # evaluate given policy
+        V = policy_eval(env, policy, V, discount_factor)
+        
+        # improve policy
+        policy = update_policy(env, policy, V, discount_factor)
+        
+        # if policy not changed over 10 iterations it converged.
+        if i % 10 == 0:
+            if (np.all(np.equal(policy, policy_prev))):
+                print('policy converged at iteration %d' %(i+1))
+                break
+            policy_prev = np.copy(policy)
+            
+    return V, policy
 
 def qlearning(env):
     q_table = np.zeros([env.nestados, env.nacciones])
@@ -205,7 +250,9 @@ def qlearning(env):
     print(f"Average penalties per episode: {total_penalties / episodes}")
     return q_table
 
-print(valueIterationEjs12(ejercicio1()))
+
+print(valueIterationEj3(ejercicio1(),max_iteration=10))
+#print(policyIterationEj3(ejercicio3()))
 #q_table = qlearning(ejercicio3())
 #print(q_table)
 

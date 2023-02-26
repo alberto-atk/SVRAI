@@ -155,10 +155,10 @@ class Entorno4:
 
 acciones = {"left":0,"right":1,"up":2,"down":3}
 
-
+"""
 entorno = Entorno4("ejercicio4", acciones)
 print(entorno.realizar_accion(1))
-"""
+
 for i in range(5):
 
     accion = random.choices(list(acciones), k=1)[0]

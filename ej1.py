@@ -19,6 +19,17 @@ class Entorno1:
         self.estado_actual = estados[choices(list(estados), k=1)[0]]
         self.nestados = len(estados)
         self.nacciones = len(acciones)
+        
+        self.definir_movimientos(estados["alto"],acciones["gira"],estados["alto"])
+        self.definir_movimientos(estados["alto"],acciones["no_gira"],estados["medio"])
+
+        self.definir_movimientos(estados["medio"],acciones["gira"],estados["alto"])
+        self.definir_movimientos(estados["medio"],acciones["no_gira"],estados["bajo"])
+
+        self.definir_movimientos(estados["bajo"],acciones["gira"],estados["medio"])
+        self.definir_movimientos(estados["bajo"],acciones["no_gira"],estados["bajo"])
+        self.P = self.generar_tabla_p()
+
 
     def reset(self):
         acciones = {"no_gira":0,"gira":1} #no gira y gira
@@ -48,6 +59,15 @@ class Entorno1:
         else:
             self.recompensa += 2
             return 1, nuevo_estado, 2
+        
+    def generar_tabla_p(self):
+        P = {}
+        for i in range(len(self.estados)):
+            acciones = {}
+            for accion in self.acciones.values():
+                acciones[accion] = self.nuevo_estado(i,accion) 
+            P[i] = acciones
+        return P
     
     def renderizar(self):
         print()
