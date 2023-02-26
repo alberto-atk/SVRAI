@@ -251,8 +251,10 @@ def qlearning(env):
     return q_table
 
 
-print(valueIterationEj3(ejercicio1(),max_iteration=10))
+
+#print(ejercicio2().generar_tabla_p())
+#print(valueIterationEj3(ejercicio2(),max_iteration=10))
 #print(policyIterationEj3(ejercicio3()))
-#q_table = qlearning(ejercicio3())
-#print(q_table)
+q_table = qlearning(ejercicio3())
+print(q_table)
 

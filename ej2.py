@@ -18,6 +18,7 @@ class Entorno2:
         self.estado_actual = 0
         self.nestados = len(estados)
         self.nacciones = len(acciones)
+        self.P = self.generar_tabla_p()
 
     def reset(self):
         acciones = {"gira_lento":0,"gira_rapido":1}
@@ -49,6 +50,27 @@ class Entorno2:
             else:
                 return 0.3, nuevo_estado, -2
 
+
+
+    def nuevo_estado_tabla_p(self,estado,accion):
+        fila_tabla = []
+        nuevoEstado = 0
+        for i in self.acciones.values():
+            nuevoEstado = self.nuevo_estado(estado,i)[1]
+            if i == accion:
+                fila_tabla.append((0.7,nuevoEstado,-2))
+            else:    
+                fila_tabla.append((0.3,nuevoEstado,-1))
+        return fila_tabla
+
+    def generar_tabla_p(self):
+        P = {}
+        for i in range(len(self.estados)):
+            acciones = {}
+            for accion in self.acciones.values():
+                acciones[accion] = self.nuevo_estado_tabla_p(i,accion) 
+            P[i] = acciones
+        return P
 
     def realizar_accion(self,accion):
         if(accion == self.acciones["gira_lento"]):
