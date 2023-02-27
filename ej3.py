@@ -31,8 +31,7 @@ class Entorno3:
             cuadricula.append([])
             for j in range(COLUMNAS):
                 cuadricula[i].append(k)
-                k += 1
-            #k += 1
+                k += 1 #A cada cuadricula se le asigna un estado
         self.__init__("ejercicio3",cuadricula, acciones)
         return self.estado_actual
 
@@ -42,7 +41,7 @@ class Entorno3:
     def realizar_accion(self,accion):
         pesos = []
         if accion in self.acciones.values():
-            if self.estado_actual == 42:
+            if self.estado_actual == 42: #El número del estado(casilla) en el que se encuentran las recompensas
                 self.recompensa = 5
                 self.estado_actual = random.choice([0,9,90,99])
                 return self.estado_actual,self.recompensa, False
@@ -68,7 +67,6 @@ class Entorno3:
                     pesos.append(0.1)
 
             #Obtencion de la accion
-            #print(self.posicion_actual)
             auxEstado = self.estado_actual
             accionFinal = random.choices(population=list(self.acciones.values()),k=1,weights=pesos)[0]
             self.estado_actual = self.obtener_nuevo_estado(self.estado_actual,accionFinal)

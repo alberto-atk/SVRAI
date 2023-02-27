@@ -50,7 +50,7 @@ class Entorno1:
     def realizar_accion(self,accion):
         if accion in self.acciones.values():
             estado_anterior = self.estado_actual
-            self.estado_actual = self.movimientos[(self.estado_actual,accion)]
+            self.estado_actual = self.movimientos[(self.estado_actual,accion)] #se obtiene el estado del diccionario de movimientos
             if str(self.estado_actual) == "bajo":
                 self.recompensa -= 1
                 return self.estado_actual, -1, False
@@ -64,10 +64,10 @@ class Entorno1:
     def nuevo_estado(self,estado,accion):
         nuevo_estado = self.movimientos[(estado,accion)]
         if nuevo_estado == 0:
-            self.recompensa -= 1
+            self.recompensa -= 1 #Si el  nuevo estado es bajo, recompensa -1
             return 1, nuevo_estado, -1
         else:
-            self.recompensa += 2
+            self.recompensa += 2 #Si el nuevo estado es otro, recompensa +2
             return 1, nuevo_estado, 2
 
 
