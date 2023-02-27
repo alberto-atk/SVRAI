@@ -1,17 +1,13 @@
 from random import choices
 
-class Estado:
-    def __init__(self,id):
-        self.id = id   
-    
-    def __str__(self) -> str:
-        return self.id
-
 class Entorno2:
     estado_actual = 0
     recompensa = 0
 
-    def __init__(self,id,estados:list, acciones:dict):
+    """
+    Función que inicializa el entorno
+    """
+    def __init__(self,id,estados, acciones):
         self.id = id
         self.estados = estados
         self.acciones = acciones
@@ -20,13 +16,21 @@ class Entorno2:
         self.nacciones = len(acciones)
         self.P = self.generar_tabla_p()
 
+    """
+    Función que devuelve el entorno a condiciones iniciales
+    """
     def reset(self):
         acciones = {"gira_lento":0,"gira_rapido":1}
-        estados = [Estado("bajo"),Estado("medio"),Estado("alto"),Estado("superior")]
+        estados = {"bajo":0, "medio": 1,"alto": 2, "superior":3}
         self.__init__("ejercicio2",estados,acciones)
         return self.estado_actual
 
+
+    """
+    Función que obtiene el estado futuro, dado un estado y una acción.
+    """  
     def nuevo_estado(self,estado,accion):
+        #Obtención de la acción final en función de las probabilidades
         if(accion == self.acciones["gira_lento"]):
             accionFinal = choices(population=list(self.acciones),k=1,weights=[0.7,0.3])[0]
         elif(accion == self.acciones["gira_rapido"]):
@@ -36,11 +40,13 @@ class Entorno2:
         if accionFinal == "gira_lento":
             nuevo_estado = 0
             self.recompensa -= 1
+            #Si la accion final es la misma que la pasada por parámetros, se devuelve probabilidad de 0,7
             if accion == accionFinal:
                 return 0.7, nuevo_estado, -1
             else:
                 return 0.3, nuevo_estado, -1
         elif accionFinal == "gira_rapido":
+            #Si esta en el estado superior, no puede subir mas
             if estado == 3:
                 return 1.0, estado,-2
             nuevo_estado = estado + 1
@@ -51,7 +57,9 @@ class Entorno2:
                 return 0.3, nuevo_estado, -2
 
 
-
+    """
+    Función auxiliar para generar las el contenido (acciones) de la tabla p 
+    """  
     def nuevo_estado_tabla_p(self,estado,accion):
         fila_tabla = []
         nuevoEstado = 0
@@ -63,6 +71,10 @@ class Entorno2:
                 fila_tabla.append((0.3,nuevoEstado,-1))
         return fila_tabla
 
+
+    """
+    Función para generar la tabla P necesaria en algunos algoritmos
+    """  
     def generar_tabla_p(self):
         P = {}
         for i in range(len(self.estados)):
@@ -72,6 +84,10 @@ class Entorno2:
             P[i] = acciones
         return P
 
+
+    """
+    Función que realiza la acción pasada por parámetros sobre el entorno
+    """
     def realizar_accion(self,accion):
         if(accion == self.acciones["gira_lento"]):
             accionFinal = choices(population=list(self.acciones),k=1,weights=[0.7,0.3])[0]
@@ -84,11 +100,13 @@ class Entorno2:
         elif accionFinal == "gira_rapido":
             self.estado_actual += 1
             self.recompensa -= 2
-        if str(self.estados[self.estado_actual]) == "superior":
+        if self.estados["superior"] == self.estado_actual:
             return self.estado_actual, self.recompensa, True
         return self.estado_actual, self.recompensa, False
         
-    
+    """
+    Función que muestra gráficamente el estado del entorno
+    """
     def renderizar(self):
         print()
         auxDibujo = []

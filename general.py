@@ -4,15 +4,20 @@ from ej3 import *
 from ej4 import *
 import numpy as np
 
+"""
+Creación del entorno para el ejercicio 1 (Vehículo en pendiente)
+"""
 def ejercicio1():
 
-    acciones = {"no_gira":0,"gira":1} #no gira y gira
+    acciones = {"no_gira":0,"gira":1}
     estados = {"bajo":0, "medio": 1,"alto": 2 }
 
     entorno = Entorno1("ejercicio1",estados, acciones)
     return entorno
 
-
+"""
+Creación del entorno para el ejercicio 2 (Vehículo en pendiente con probabilidades)
+"""
 def ejercicio2():
     acciones = {"gira_lento":0,"gira_rapido":1}
     estados = {"bajo":0, "medio": 1,"alto": 2, "superior":3}
@@ -22,6 +27,10 @@ def ejercicio2():
 
     return entorno
 
+
+"""
+Creación del entorno para el ejercicio 3 (Mundo Malla)
+"""
 def ejercicio3():
     acciones = {"left":0,"right":1,"up":2,"down":3}
 
@@ -39,6 +48,9 @@ def ejercicio3():
 
     return entorno
 
+"""
+Creación del entorno para el ejercicio 4 (2048)
+"""
 def ejercicio4():
     acciones = {"left":0,"right":1,"up":2,"down":3}
 
@@ -47,8 +59,11 @@ def ejercicio4():
 
     return entorno
 
-
-def valueIterationEj3(env,discount_factor=0.999, max_iteration=1000):
+"""
+Obtenido de: https://github.com/waqasqammar/MDP-with-Value-Iteration-and-Policy-Iteration/blob/master/MDP_with_PI_VI.ipynb
+Y adaptado para los problemas, para ello, se tuvo que generar la tabla P en los ejercicios.
+"""
+def valueIteration(env,discount_factor=0.999, max_iteration=1000):
     def one_step_lookahead(env, state, V , discount_factor = 0.99):
         action_values = np.zeros(env.nacciones)
         
@@ -95,6 +110,11 @@ def valueIterationEj3(env,discount_factor=0.999, max_iteration=1000):
     
     return V, optimal_policy
 
+"""
+Algoritmo implementado según lo visto en clase. 
+Es necesario la tabla T y la R, por lo que al ser más difícil de obtenerlas en el ejercicio 3 (mundo malla),
+únicamente sirve para los dos primeros.
+"""
 def valueIterationEjs12(env):
     def lookahead(U,s,a,gamma=0.8):
         suma = 0
@@ -129,7 +149,10 @@ def valueIterationEjs12(env):
     print("U: " + str(U))
 
 
-
+"""
+Igual que valueIteration, pero en este caso solo funciona para el ejercicio3 
+(con el 1 y 2 da error en la clave)
+"""
 def policyIterationEj3(env, discount_factor = 0.999, max_iteration = 1000):
     def policy_eval(env, policy, V, discount_factor):
         policy_value = np.zeros(env.nestados)
@@ -178,6 +201,11 @@ def policyIterationEj3(env, discount_factor = 0.999, max_iteration = 1000):
             
     return V, policy
 
+
+"""
+Implementación del algoritmo de qlearning basado en: https://www.learndatasci.com/tutorials/reinforcement-q-learning-scratch-python-openai-gym/
+Para ello, se han tenido que adaptar los ejercicios al mismo, obteniendo la tabla P de la misma forma que gym
+"""
 def qlearning(env):
     q_table = np.zeros([env.nestados, env.nacciones])
     import random
@@ -251,10 +279,11 @@ def qlearning(env):
     return q_table
 
 
+#env = ejercicio1()
 
 #print(ejercicio2().generar_tabla_p())
-#print(valueIterationEj3(ejercicio2(),max_iteration=10))
+print(qlearning(ejercicio3()))
 #print(policyIterationEj3(ejercicio3()))
-q_table = qlearning(ejercicio3())
-print(q_table)
+#q_table = qlearning(ejercicio3())
+#print(q_table)
 

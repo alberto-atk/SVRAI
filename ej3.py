@@ -6,6 +6,9 @@ class Entorno3:
     posicion_actual = [-1,-1]
     recompensa = 0
 
+    """
+    Función inicial, en la que también se declaran los movimientos posibles con sus resultados
+    """
     def __init__(self,id,cuadricula:dict, acciones:dict):
         self.id = id
         self.cuadricula = cuadricula
@@ -15,6 +18,10 @@ class Entorno3:
         self.estado_actual = random.randint(0, FILAS*COLUMNAS-1)
         self.P = self.generar_tabla_p()
 
+
+    """
+    Función que devuelve el entorno a condiciones iniciales
+    """
     def reset(self):
         acciones = {"left":0,"right":1,"up":2,"down":3}
 
@@ -29,7 +36,9 @@ class Entorno3:
         self.__init__("ejercicio3",cuadricula, acciones)
         return self.estado_actual
 
-
+    """
+    Función que realiza la acción pasada por parámetros sobre el entorno
+    """
     def realizar_accion(self,accion):
         pesos = []
         if accion in self.acciones.values():
@@ -68,6 +77,10 @@ class Entorno3:
                 self.recompensa -= 1
             return self.estado_actual,self.recompensa, False
 
+
+    """
+    Función auxiliar para generar las el contenido (acciones) de la tabla p 
+    """  
     def nuevo_estado_tabla_p(self,estado,accion):
         if accion in self.acciones.values():
             recompensa = 0
@@ -96,6 +109,9 @@ class Entorno3:
                     fila_tabla.append((0.1,nuevoEstado,-1 if estado == nuevoEstado else 0))
             return fila_tabla
 
+    """
+    Función que obtiene el estado futuro, dado un estado y una acción.
+    """  
     def obtener_nuevo_estado(self,estado,accion):
         if estado+10 >= 100 and accion == 3:
             return estado
@@ -114,7 +130,10 @@ class Entorno3:
             return estado - 10
         if accion == 3:
             return estado + 10
-        
+
+    """
+    Función para generar la tabla P necesaria en algunos algoritmos
+    """       
     def generar_tabla_p(self):
         P = {}
         for i in range(COLUMNAS*FILAS):
@@ -123,7 +142,11 @@ class Entorno3:
                 acciones[accion] = self.nuevo_estado_tabla_p(i,accion) 
             P[i] = acciones
         return P
-    
+
+
+    """
+    Función que muestra gráficamente el estado del entorno
+    """  
     def renderizar(self):
         for i in range(len(self.cuadricula)):
             for j in range(len(self.cuadricula[i])):

@@ -1,17 +1,14 @@
 from random import choices
 
-class Estado:
-    def __init__(self,id):
-        self.id = id   
-    
-    def __str__(self) -> str:
-        return self.id
-
 class Entorno1:
     movimientos = {}
-    estado_actual = Estado("estado_indeterminado")
+    estado_actual = 0
     recompensa = 0
 
+
+    """
+    Función inicial, en la que también se declaran los movimientos posibles con sus resultados
+    """
     def __init__(self,id,estados, acciones):
         self.id = id
         self.estados = estados
@@ -30,16 +27,26 @@ class Entorno1:
         self.definir_movimientos(estados["bajo"],acciones["no_gira"],estados["bajo"])
         self.P = self.generar_tabla_p()
 
-
+    """
+    Función que devuelve el entorno a condiciones iniciales
+    """
     def reset(self):
         acciones = {"no_gira":0,"gira":1} #no gira y gira
         estados = {"bajo":0, "medio": 1,"alto": 2 }
         self.__init__("ejercicio1",estados,acciones)
         return self.estado_actual
     
+
+    """
+    Función que añade un movimiento al diccionario de posibilidades
+    """
     def definir_movimientos(self,estado1,accion,estado2):
         self.movimientos[(estado1,accion)] = estado2
 
+
+    """
+    Función que realiza la acción pasada por parámetros sobre el entorno
+    """
     def realizar_accion(self,accion):
         if accion in self.acciones.values():
             estado_anterior = self.estado_actual
@@ -50,7 +57,10 @@ class Entorno1:
             else:
                 self.recompensa += 2
                 return self.estado_actual, 2, False
-        
+
+    """
+    Función que obtiene el estado futuro, dado un estado y una acción.
+    """   
     def nuevo_estado(self,estado,accion):
         nuevo_estado = self.movimientos[(estado,accion)]
         if nuevo_estado == 0:
@@ -59,7 +69,11 @@ class Entorno1:
         else:
             self.recompensa += 2
             return 1, nuevo_estado, 2
-        
+
+
+    """
+    Función para generar la tabla P necesaria en algunos algoritmos
+    """  
     def generar_tabla_p(self):
         P = {}
         for i in range(len(self.estados)):
@@ -69,6 +83,9 @@ class Entorno1:
             P[i] = acciones
         return P
     
+    """
+    Función que muestra gráficamente el estado del entorno
+    """
     def renderizar(self):
         print()
         auxDibujo = []
